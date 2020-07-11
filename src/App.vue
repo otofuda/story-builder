@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <header>
-      <h1>StoryBuilder beta</h1>
+      <img src="/logo.png" alt="StoryBuilder" />
+      <div>
+        <el-button type="primary" round>Export .grimm</el-button>
+      </div>
     </header>
 
     <nav>
@@ -20,8 +23,7 @@
               type="danger"
               @click="deleteChar(scope.row)"
               icon="el-icon-delete"
-              >削除</el-button
-            >
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -53,8 +55,7 @@
               type="danger"
               icon="el-icon-delete"
               @click="deleteBackground(scope.row)"
-              >削除</el-button
-            >
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -235,10 +236,35 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   display: grid;
   grid-template-columns: 280px 1fr;
-  grid-template-rows: 60px 1fr;
+  grid-template-rows: 105px 1fr;
   header {
     grid-column: 1/3;
     grid-row: 1;
+    background: #303030;
+    padding: 5px 10px 0 10px;
+    display: flex;
+    img {
+      height: 90px;
+    }
+    div {
+      flex-grow: 1;
+      text-align: right;
+      padding-top: 25px;
+    }
+  }
+  nav {
+    background: #f0f0f0;
+    padding: 0 10px;
+    .el-table {
+      margin-bottom: 15px;
+    }
+  }
+  main {
+    padding: 0 20px;
+    background: #ffffff;
+    .el-timeline-item:last-child {
+      padding-bottom: 0;
+    }
   }
   .acts {
     padding-left: 4px;

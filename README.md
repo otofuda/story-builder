@@ -1,4 +1,4 @@
-# StoryBuilder
+![StoryBuilder](logo_colored.png)
 
 **StoryBuilder is a novel-script builder for Otofuda StoryTeller System.**
 
