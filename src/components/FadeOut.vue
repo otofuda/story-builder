@@ -1,15 +1,6 @@
 <template>
-  <el-card class="fade-out">
-    <div slot="header" class="clearfix">
-      <strong>フェードアウト</strong>
-      <el-button
-        style="float: right"
-        size="mini"
-        type="danger"
-        icon="el-icon-delete"
-      ></el-button>
-    </div>
-    <i class="el-icon-timer"></i>
+  <div class="fade-out">
+    <label>遷移秒数</label>
     <el-input-number
       v-model="act.duration"
       @change="update"
@@ -17,7 +8,7 @@
       :precision="2"
       :step="0.1"
     ></el-input-number>
-  </el-card>
+  </div>
 </template>
 
 <script>
@@ -29,8 +20,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.el-card__header {
-  background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-}
-</style>
+<style lang="scss"></style>
