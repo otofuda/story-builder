@@ -4897,6 +4897,11 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   resolved "https://registry.npm.taobao.org/kind-of/download/kind-of-6.0.3.tgz?cache=0&sync_timestamp=1579193926808&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fkind-of%2Fdownload%2Fkind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha1-B8BQNKbDSfoG4k+jWqdttFgM5N0=
 
+kitstrap@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npm.taobao.org/kitstrap/download/kitstrap-0.6.0.tgz#2c07875a377fbb44c557912ab33ca91295706ec3"
+  integrity sha1-LAeHWjd/u0TFV5EqszypEpVwbsM=
+
 klona@^1.1.1:
   version "1.1.2"
   resolved "https://registry.npm.taobao.org/klona/download/klona-1.1.2.tgz#a79e292518a5a5412ec8d097964bff1571a64db0"

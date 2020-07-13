@@ -1,6 +1,9 @@
 <template>
   <div class="main-start">
-    <h4>[メイン] 開始</h4>
+    <h4>
+      <i class="el-icon-sort-down"></i>
+      メイン 開始
+    </h4>
   </div>
 </template>
 

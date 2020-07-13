@@ -1,6 +1,13 @@
 <template>
   <div class="fade-in">
-    <h4>FadeIn</h4>
+    <label>遷移秒数</label>
+    <el-input-number
+      v-model="act.duration"
+      @change="update"
+      :min="0.01"
+      :precision="2"
+      :step="0.1"
+    ></el-input-number>
   </div>
 </template>
 
@@ -12,3 +19,5 @@ export default {
   }
 };
 </script>
+
+<style lang="scss"></style>

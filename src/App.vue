@@ -1,7 +1,15 @@
 <template>
   <div id="app">
     <header>
-      <h1>StoryBuilder beta</h1>
+      <a
+        href="http://github.com/otofuda/story-builder"
+        target="_blank"
+        rel="noopener noreferrer"
+        ><img src="/logo.png" alt="StoryBuilder"
+      /></a>
+      <div>
+        <el-button type="primary" round>Export .grimm</el-button>
+      </div>
     </header>
 
     <nav>
@@ -20,8 +28,7 @@
               type="danger"
               @click="deleteChar(scope.row)"
               icon="el-icon-delete"
-              >削除</el-button
-            >
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -53,8 +60,7 @@
               type="danger"
               icon="el-icon-delete"
               @click="deleteBackground(scope.row)"
-              >削除</el-button
-            >
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -70,38 +76,38 @@
           >追加</el-button
         >
       </el-input>
+
+      <h3><i class="el-icon-s-operation"></i> 表示</h3>
+      <el-switch
+        v-model="config.compact"
+        active-text="コンパクト表示"
+      ></el-switch>
     </nav>
 
     <main>
       <h3><i class="el-icon-tickets"></i> スクリプト</h3>
 
       <el-timeline class="acts">
-        <el-timeline-item size="large">
-          <MainStart />
-        </el-timeline-item>
-
+        <MainStart />
         <el-divider></el-divider>
 
         <draggable v-model="acts" :animation="250">
           <el-timeline-item v-for="(act, i) in acts" :key="i" size="large">
-            <component
-              :is="act.type"
-              :act="act"
-              :characters="characters"
-              :backgrounds="backgrounds"
-              :index="i"
-            />
+            <Wrapper :act="act" :i="i" :config="config">
+              <component
+                :is="act.type"
+                :act="act"
+                :characters="characters"
+                :backgrounds="backgrounds"
+                :index="i"
+              />
+            </Wrapper>
           </el-timeline-item>
         </draggable>
 
         <el-divider></el-divider>
-
-        <el-timeline-item size="large">
-          <MainEnd />
-        </el-timeline-item>
-        <el-timeline-item size="large">
-          <OptionEnd />
-        </el-timeline-item>
+        <MainEnd />
+        <OptionEnd />
       </el-timeline>
     </main>
   </div>
@@ -121,12 +127,17 @@ import MainStart from "./components/MainStart";
 import MainEnd from "./components/MainEnd";
 import OptionEnd from "./components/OptionEnd";
 
+import Wrapper from "./components/Wrapper";
+
 export default {
   name: "App",
   data() {
     return {
+      config: {
+        compact: false
+      },
       charName: "",
-      characters: ["華音", "門音", "空音", "_", "???"],
+      characters: ["華音", "門音", "空音", "_"],
       backgroundName: "",
       backgrounds: ["朝", "夜"],
       acts: [
@@ -141,7 +152,55 @@ export default {
         {
           type: "Say",
           name: "???",
-          body: "これは、ある世界の物語"
+          body: "これは、ある世界の物語",
+          costume: 0,
+          face: 0
+        },
+        {
+          type: "FadeIn",
+          duration: "0.5"
+        },
+        {
+          type: "Back",
+          name: "朝"
+        },
+        {
+          type: "Say",
+          name: "門音",
+          body: "あの魔物は・・・私の兄の仇・・・絶対に許さない。",
+          costume: 0,
+          face: 0
+        },
+        {
+          type: "Say",
+          name: "怪物",
+          body: "うぁぁぁぁぁ！やめてくれぇぇぇ！",
+          costume: 0,
+          face: 0
+        },
+        {
+          type: "FadeOut",
+          duration: "0.5"
+        },
+        {
+          type: "Leave",
+          name: "門音"
+        },
+        {
+          type: "Say",
+          name: "_",
+          body:
+            "必死に門音の方に手を伸ばす、しかしその手はあと一歩のところで届かない。\nあの時私の手が届いていれば・・・。",
+          costume: 0,
+          face: 0
+        },
+        {
+          type: "Leave",
+          name: "華音"
+        },
+        {
+          type: "FadeIn",
+          duration: "0.5"
         }
       ]
     };
@@ -213,6 +272,16 @@ export default {
       });
     }
   },
+  computed: {
+    script() {
+      let r = "";
+      for (const act of this.acts) {
+        r += act.type;
+        r += " ";
+      }
+      return r;
+    }
+  },
   components: {
     draggable,
     Say,
@@ -223,7 +292,8 @@ export default {
     Leave,
     MainStart,
     MainEnd,
-    OptionEnd
+    OptionEnd,
+    Wrapper
   }
 };
 </script>
@@ -235,16 +305,49 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   display: grid;
   grid-template-columns: 280px 1fr;
-  grid-template-rows: 60px 1fr;
+  grid-template-rows: 105px 1fr;
   header {
     grid-column: 1/3;
     grid-row: 1;
+    background: #303030;
+    padding: 5px 10px 0 10px;
+    display: flex;
+    img {
+      height: 90px;
+    }
+    div {
+      flex-grow: 1;
+      text-align: right;
+      padding-top: 25px;
+    }
+  }
+  nav {
+    background: #f0f0f0;
+    padding: 0 10px;
+    .el-table {
+      margin-bottom: 15px;
+    }
+  }
+  main {
+    padding: 0 20px;
+    background: #ffffff;
+    .el-timeline-item:last-child {
+      padding-bottom: 0;
+    }
   }
   .acts {
     padding-left: 4px;
     .el-card__header {
-      color: #ffffff;
+      background-image: radial-gradient(
+        circle farthest-corner at 10% 20%,
+        rgba(234, 249, 249, 0.67) 0.1%,
+        rgba(239, 249, 251, 0.63) 90.1%
+      );
       font-size: 18px;
+    }
+    label {
+      font-size: 16px;
+      margin-right: 20px;
     }
   }
 }

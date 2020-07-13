@@ -1,20 +1,23 @@
 <template>
-  <el-card class="say">
-    <div slot="header" class="clearfix">
-      <strong>セリフ</strong>
-      <el-button
-        style="float: right"
-        size="mini"
-        type="danger"
-        icon="el-icon-delete"
-      ></el-button>
-    </div>
-    <i class="el-icon-user"></i>
-    <el-select v-model="act.name" placeholder="キャラを選択">
+  <div class="say">
+    <label>キャラの名前</label>
+    <el-select
+      v-model="act.name"
+      placeholder="キャラを選択"
+      filterable
+      allow-create
+    >
       <el-option v-for="c in characters" :key="c" :value="c"> </el-option>
     </el-select>
-    <i class="el-icon-chat-dot-square"></i>
-  </el-card>
+    <el-divider></el-divider>
+    <el-input
+      type="textarea"
+      :rows="2"
+      placeholder="Please input"
+      v-model="act.body"
+    >
+    </el-input>
+  </div>
 </template>
 
 <script>
@@ -27,8 +30,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.el-card__header {
-  background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-}
-</style>
+<style lang="scss"></style>
