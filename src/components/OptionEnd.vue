@@ -1,6 +1,9 @@
 <template>
   <div class="option-end">
-    <h4>オプション終了</h4>
+    <h4>
+      <i class="el-icon-minus"></i>
+      オプション 終了
+    </h4>
   </div>
 </template>
 

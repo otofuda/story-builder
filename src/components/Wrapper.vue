@@ -16,7 +16,9 @@
         icon="el-icon-delete"
       ></el-button>
     </div>
-    <slot></slot>
+    <div v-if="!config.compact" style="padding: 20px 0">
+      <slot></slot>
+    </div>
   </el-card>
 </template>
 
@@ -25,7 +27,8 @@ export default {
   name: "Wrapper",
   props: {
     act: Object,
-    i: Number
+    i: Number,
+    config: Object
   },
   computed: {
     getType() {
@@ -104,4 +107,8 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.el-card__body {
+  padding: 0 20px !important;
+}
+</style>

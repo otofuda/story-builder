@@ -76,21 +76,24 @@
           >追加</el-button
         >
       </el-input>
+
+      <h3><i class="el-icon-s-operation"></i> 表示</h3>
+      <el-switch
+        v-model="config.compact"
+        active-text="コンパクト表示"
+      ></el-switch>
     </nav>
 
     <main>
       <h3><i class="el-icon-tickets"></i> スクリプト</h3>
 
       <el-timeline class="acts">
-        <el-timeline-item size="large">
-          <MainStart />
-        </el-timeline-item>
-
+        <MainStart />
         <el-divider></el-divider>
 
         <draggable v-model="acts" :animation="250">
           <el-timeline-item v-for="(act, i) in acts" :key="i" size="large">
-            <Wrapper :act="act" :i="i">
+            <Wrapper :act="act" :i="i" :config="config">
               <component
                 :is="act.type"
                 :act="act"
@@ -103,13 +106,8 @@
         </draggable>
 
         <el-divider></el-divider>
-
-        <el-timeline-item size="large">
-          <MainEnd />
-        </el-timeline-item>
-        <el-timeline-item size="large">
-          <OptionEnd />
-        </el-timeline-item>
+        <MainEnd />
+        <OptionEnd />
       </el-timeline>
     </main>
   </div>
@@ -135,6 +133,9 @@ export default {
   name: "App",
   data() {
     return {
+      config: {
+        compact: false
+      },
       charName: "",
       characters: ["華音", "門音", "空音", "_"],
       backgroundName: "",

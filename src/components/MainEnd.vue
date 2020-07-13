@@ -1,6 +1,9 @@
 <template>
   <div class="main-end">
-    <h4>[メイン] 終了</h4>
+    <h4>
+      <i class="el-icon-arrow-up"></i>
+      メイン 終了
+    </h4>
   </div>
 </template>
 
