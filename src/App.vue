@@ -5,12 +5,18 @@
         href="http://github.com/otofuda/story-builder"
         target="_blank"
         rel="noopener noreferrer"
-        ><img src="/logo.png" alt="StoryBuilder"
+        ><img
+          src="https://otofuda.github.io/story-builder/logo.png"
+          alt="StoryBuilder"
       /></a>
       <div>
-        <el-button type="primary" round>Export .grimm</el-button>
+        <el-button round @click="toggleExport" icon="el-icon-s-tools"
+          >エクスポート設定</el-button
+        >
       </div>
     </header>
+
+    <AppExport class="export" v-if="config.export" :acts="acts"></AppExport>
 
     <nav>
       <h3><i class="el-icon-user-solid"></i> キャラデータ</h3>
@@ -91,7 +97,7 @@
         <MainStart />
         <el-divider></el-divider>
 
-        <draggable v-model="acts" :animation="250">
+        <draggable v-model="acts" :animation="250" handle=".handle">
           <el-timeline-item v-for="(act, i) in acts" :key="i" size="large">
             <Wrapper :act="act" :i="i" :config="config">
               <component
@@ -102,6 +108,7 @@
                 :index="i"
               />
             </Wrapper>
+            <button slot="header" @click="addPeople">Add</button>
           </el-timeline-item>
         </draggable>
 
@@ -128,13 +135,15 @@ import MainEnd from "./components/MainEnd";
 import OptionEnd from "./components/OptionEnd";
 
 import Wrapper from "./components/Wrapper";
+import AppExport from "./components/AppExport";
 
 export default {
   name: "App",
   data() {
     return {
       config: {
-        compact: false
+        compact: false,
+        export: false
       },
       charName: "",
       characters: ["華音", "門音", "空音", "_"],
@@ -209,6 +218,9 @@ export default {
     Bury.init();
   },
   methods: {
+    toggleExport() {
+      this.config.export = !this.config.export;
+    },
     addChar(name) {
       if (this.characters.includes(name)) {
         this.$alert("登録済みです。");
@@ -272,16 +284,6 @@ export default {
       });
     }
   },
-  computed: {
-    script() {
-      let r = "";
-      for (const act of this.acts) {
-        r += act.type;
-        r += " ";
-      }
-      return r;
-    }
-  },
   components: {
     draggable,
     Say,
@@ -293,7 +295,8 @@ export default {
     MainStart,
     MainEnd,
     OptionEnd,
-    Wrapper
+    Wrapper,
+    AppExport
   }
 };
 </script>
@@ -319,6 +322,17 @@ export default {
       flex-grow: 1;
       text-align: right;
       padding-top: 25px;
+    }
+  }
+  .export {
+    grid-column: 1/3;
+    grid-row: 2;
+    background: #303030;
+    color: #ffffff;
+    padding: 10px;
+    pre {
+      color: #505050;
+      max-height: 250px;
     }
   }
   nav {
