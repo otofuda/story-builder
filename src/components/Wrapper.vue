@@ -1,12 +1,6 @@
 <template>
   <el-card class="wrapper">
-    <div
-      slot="header"
-      class="clearfix"
-      :style="{
-        color: getColor
-      }"
-    >
+    <div slot="header" class="clearfix handle">
       <i :class="getIcon"></i> {{ i }}
       <strong>{{ getType }} - {{ act.type }}</strong>
       <el-button
