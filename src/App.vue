@@ -19,6 +19,27 @@
     <AppExport class="export" v-if="config.export" :acts="acts"></AppExport>
 
     <nav>
+      <el-collapse v-model="activeNames" @change="handleChange">
+        <el-collapse-item title="ファイル操作" name="1">
+          <div>保存していない現在の作業状況は失われます。</div>
+          <div class="kit-flex m-t">
+            <el-button
+              type="primary"
+              class="kit-flex-grow"
+              @click="newProfile()"
+              >新規ファイル</el-button
+            >
+          </div>
+          <div class="kit-flex m-t">
+            <el-button
+              type="primary"
+              class="kit-flex-grow"
+              @click="loadSample()"
+              >サンプルデータを読み込む</el-button
+            >
+          </div>
+        </el-collapse-item>
+      </el-collapse>
       <h3><i class="el-icon-user-solid"></i> キャラデータ</h3>
 
       <el-table :data="characters" style="width: 100%">
@@ -98,8 +119,17 @@
         <el-divider></el-divider>
 
         <draggable v-model="acts" :animation="250" handle=".handle">
-          <el-timeline-item v-for="(act, i) in acts" :key="i" size="large">
-            <Wrapper :act="act" :i="i" :config="config">
+          <el-timeline-item
+            v-for="(act, index) in acts"
+            :key="index"
+            size="large"
+          >
+            <Wrapper
+              :act="act"
+              :index="index"
+              :config="config"
+              @delete-act="deleteAct"
+            >
               <component
                 :is="act.type"
                 :act="act"
@@ -116,6 +146,39 @@
         <MainEnd />
         <OptionEnd />
       </el-timeline>
+
+      <el-dropdown
+        class="add-button kit-shadow-5"
+        trigger="click"
+        @command="addAct"
+      >
+        <el-button type="primary">
+          末尾にコンポーネントを追加<i
+            class="el-icon-arrow-down el-icon--right"
+          ></i>
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="Say"
+            ><i class="el-icon-chat-dot-square"></i>
+            通常セリフ</el-dropdown-item
+          >
+          <el-dropdown-item command="Back"
+            ><i class="el-icon-picture"></i>背景変更</el-dropdown-item
+          >
+          <el-dropdown-item command="FadeIn"
+            ><i class="el-icon-caret-right"></i>暗転解除</el-dropdown-item
+          >
+          <el-dropdown-item command="FadeOut"
+            ><i class="el-icon-caret-left"></i>暗転</el-dropdown-item
+          >
+          <el-dropdown-item command="Join"
+            ><i class="el-icon-arrow-right"></i>キャラ入場</el-dropdown-item
+          >
+          <el-dropdown-item command="Leave"
+            ><i class="el-icon-arrow-left"></i>キャラ退場</el-dropdown-item
+          >
+        </el-dropdown-menu>
+      </el-dropdown>
     </main>
   </div>
 </template>
@@ -145,11 +208,13 @@ export default {
         compact: false,
         export: false
       },
+      activeNames: [],
       charName: "",
       characters: ["華音", "門音", "空音", "_"],
       backgroundName: "",
       backgrounds: ["朝", "夜"],
-      acts: [
+      acts: [],
+      sample: [
         {
           type: "Back",
           name: "夜"
@@ -282,6 +347,88 @@ export default {
           message: `「${name}」を削除しました。`
         });
       });
+    },
+    addAct(type) {
+      let r;
+      switch (type) {
+        case "Say":
+          r = { name: "", body: "", costume: 0, face: 0 };
+          break;
+        case "Back":
+          r = { name: "" };
+          break;
+        case "FadeIn":
+          r = { duration: 0.5 };
+          break;
+        case "FadeOut":
+          r = { duration: 0.5 };
+          break;
+        case "Join":
+          r = { name: "" };
+          break;
+        case "Leave":
+          r = { name: "" };
+          break;
+        case "MainStart":
+        case "MainEnd":
+        case "OptionEnd":
+        default:
+          this.$message({
+            type: "error",
+            message: "不明なタイプを追加できませんでした。"
+          });
+          return false;
+      }
+      this.acts.push({ type, ...r });
+      this.$message({
+        type: "success",
+        message: `${type}を追加しました。`
+      });
+    },
+    deleteAct(index) {
+      this.$confirm(`本当に${this.acts[index].type}を削除しますか？`, "確認", {
+        confirmButtonText: "削除",
+        cancelButtonText: "キャンセル",
+        type: "warning"
+      }).then(() => {
+        this.acts.delete_at(index);
+        this.$message({ type: "success", message: "削除しました。" });
+      });
+    },
+    // ファイル操作関連
+    newProfile() {
+      this.$confirm(
+        "本当に新規プロファイルの編集を開始しますか？作業中のデータは失われます。",
+        "確認",
+        {
+          confirmButtonText: "了解して続行",
+          cancelButtonText: "キャンセル",
+          type: "warning"
+        }
+      ).then(() => {
+        this.acts = [];
+        this.$message({
+          type: "success",
+          message: "新しいプロファイルの編集を開始しました。"
+        });
+      });
+    },
+    loadSample() {
+      this.$confirm(
+        "本当にサンプルファイルを読み込みますか？作業中のデータは失われます。",
+        "確認",
+        {
+          confirmButtonText: "了解して続行",
+          cancelButtonText: "キャンセル",
+          type: "warning"
+        }
+      ).then(() => {
+        this.acts = this.sample;
+        this.$message({
+          type: "success",
+          message: "サンプルファイルを読み込みました。"
+        });
+      });
     }
   },
   components: {
@@ -341,12 +488,21 @@ export default {
     .el-table {
       margin-bottom: 15px;
     }
+    .el-collapse-item__header,
+    .el-collapse-item__wrap {
+      background: transparent;
+    }
   }
   main {
     padding: 0 20px;
     background: #ffffff;
     .el-timeline-item:last-child {
       padding-bottom: 0;
+    }
+    .add-button {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
     }
   }
   .acts {
@@ -364,5 +520,11 @@ export default {
       margin-right: 20px;
     }
   }
+}
+
+.el-dropdown-menu__item {
+  font-size: 16px !important;
+  padding: 10px 20px !important;
+  width: 200px;
 }
 </style>
