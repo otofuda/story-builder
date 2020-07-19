@@ -13,7 +13,7 @@
     <el-input
       type="textarea"
       :rows="2"
-      placeholder="Please input"
+      placeholder="ここにセリフを入力"
       v-model="act.body"
     >
     </el-input>

@@ -1,13 +1,14 @@
 <template>
   <el-card class="wrapper">
     <div slot="header" class="clearfix handle">
-      <i :class="getIcon"></i> {{ i }}
+      <i :class="getIcon"></i> {{ index }}
       <strong>{{ getType }} - {{ act.type }}</strong>
       <el-button
         style="float: right"
         size="mini"
         type="danger"
         icon="el-icon-delete"
+        @click="deleteAct(index)"
       ></el-button>
     </div>
     <div v-if="!config.compact" style="padding: 20px 0">
@@ -21,8 +22,13 @@ export default {
   name: "Wrapper",
   props: {
     act: Object,
-    i: Number,
+    index: Number,
     config: Object
+  },
+  methods: {
+    deleteAct(index) {
+      this.$emit("delete-act", index);
+    }
   },
   computed: {
     getType() {
@@ -53,7 +59,7 @@ export default {
           r = "メイン終了";
           break;
         case "OptionEnd":
-          r = "Hoge";
+          r = "オプション終了";
           break;
         default:
           r = this.act.type;
