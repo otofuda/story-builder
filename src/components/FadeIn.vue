@@ -3,7 +3,6 @@
     <label>遷移秒数</label>
     <el-input-number
       v-model="act.duration"
-      @change="update"
       :min="0.01"
       :precision="2"
       :step="0.1"

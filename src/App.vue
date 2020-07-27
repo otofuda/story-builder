@@ -19,7 +19,7 @@
     <AppExport class="export" v-if="config.export" :acts="acts"></AppExport>
 
     <nav>
-      <el-collapse v-model="activeNames" @change="handleChange">
+      <el-collapse v-model="activeNames">
         <el-collapse-item title="ファイル操作" name="1">
           <div>保存していない現在の作業状況は失われます。</div>
           <div class="kit-flex m-t">
@@ -135,10 +135,10 @@
                 :act="act"
                 :characters="characters"
                 :backgrounds="backgrounds"
-                :index="i"
+                :index="index"
               />
             </Wrapper>
-            <button slot="header" @click="addPeople">Add</button>
+            <ActPreview :preview="previewList[index]" />
           </el-timeline-item>
         </draggable>
 
@@ -148,15 +148,14 @@
       </el-timeline>
 
       <el-dropdown
+        split-button
+        type="primary"
+        @click="addAct('Say')"
         class="add-button kit-shadow-5"
         trigger="click"
         @command="addAct"
       >
-        <el-button type="primary">
-          末尾にコンポーネントを追加<i
-            class="el-icon-arrow-down el-icon--right"
-          ></i>
-        </el-button>
+        末尾に通常セリフを追加
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="Say"
             ><i class="el-icon-chat-dot-square"></i>
@@ -199,6 +198,7 @@ import OptionEnd from "./components/OptionEnd";
 
 import Wrapper from "./components/Wrapper";
 import AppExport from "./components/AppExport";
+import ActPreview from "./components/ActPreview";
 
 export default {
   name: "App",
@@ -257,7 +257,7 @@ export default {
           duration: "0.5"
         },
         {
-          type: "Leave",
+          type: "Join",
           name: "門音"
         },
         {
@@ -278,6 +278,45 @@ export default {
         }
       ]
     };
+  },
+  computed: {
+    previewList() {
+      let result = [],
+        currentBackground = this.backgrounds.first,
+        currentCharacters = [],
+        currentDark = false;
+      for (const act of this.acts) {
+        let active = null;
+        if (act.type === "Say") {
+          active = act.name;
+          if (
+            act.name &&
+            !currentCharacters.includes(act.name) &&
+            this.characters.includes(act.name)
+          )
+            currentCharacters.append(act.name);
+        } else if (act.type == "Join") {
+          if (act.name && !currentCharacters.includes(act.name))
+            currentCharacters.append(act.name);
+        } else if (act.type == "Leave") {
+          if (currentCharacters.includes(act.name))
+            currentCharacters = currentCharacters.delete(act.name);
+        } else if (act.type === "Back") {
+          currentBackground = act.name;
+        } else if (act.type === "FadeOut") {
+          currentDark = true;
+        } else if (act.type === "FadeIn") {
+          currentDark = false;
+        }
+        result.append({
+          background: currentBackground,
+          characters: [...currentCharacters],
+          dark: currentDark,
+          active
+        });
+      }
+      return result;
+    }
   },
   mounted() {
     Bury.init();
@@ -443,7 +482,8 @@ export default {
     MainEnd,
     OptionEnd,
     Wrapper,
-    AppExport
+    AppExport,
+    ActPreview
   }
 };
 </script>
@@ -503,6 +543,12 @@ export default {
       position: fixed;
       bottom: 15px;
       right: 15px;
+    }
+    .el-timeline-item__content {
+      display: flex;
+      > .el-card:first-child {
+        flex-grow: 1;
+      }
     }
   }
   .acts {
