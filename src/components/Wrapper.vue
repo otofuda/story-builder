@@ -108,7 +108,12 @@ export default {
 </script>
 
 <style lang="scss">
-.el-card__body {
-  padding: 0 20px !important;
+.el-card {
+  &__header {
+    padding: 8px 20px !important;
+  }
+  &__body {
+    padding: 0 20px !important;
+  }
 }
 </style>
