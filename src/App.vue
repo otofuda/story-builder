@@ -138,7 +138,12 @@
                 :index="index"
               />
             </Wrapper>
-            <ActPreview :preview="previewList[index]" />
+            <ActPreview
+              v-if="previewList[index].characters.size > 0"
+              :index="index"
+              :preview="previewList[index]"
+              @select-char="selectChar"
+            />
           </el-timeline-item>
         </draggable>
 
@@ -210,9 +215,9 @@ export default {
       },
       activeNames: [],
       charName: "",
-      characters: ["華音", "門音", "空音", "_"],
+      characters: ["華音", "門音", "空音", "大音", "_"],
       backgroundName: "",
-      backgrounds: ["朝", "夜"],
+      backgrounds: ["BLACK", "朝", "夜"],
       acts: [],
       sample: [
         {
@@ -292,11 +297,16 @@ export default {
           if (
             act.name &&
             !currentCharacters.includes(act.name) &&
-            this.characters.includes(act.name)
+            this.characters.includes(act.name) &&
+            act.name !== "_"
           )
             currentCharacters.append(act.name);
         } else if (act.type == "Join") {
-          if (act.name && !currentCharacters.includes(act.name))
+          if (
+            act.name &&
+            !currentCharacters.includes(act.name) &&
+            act.name !== "_"
+          )
             currentCharacters.append(act.name);
         } else if (act.type == "Leave") {
           if (currentCharacters.includes(act.name))
@@ -433,6 +443,10 @@ export default {
         this.acts.delete_at(index);
         this.$message({ type: "success", message: "削除しました。" });
       });
+    },
+    selectChar(index, name) {
+      const act = this.acts[index];
+      if (["Say", "Leave"].includes(act.type)) act.name = name;
     },
     // ファイル操作関連
     newProfile() {

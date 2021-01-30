@@ -4,6 +4,9 @@
     :class="{
       dark: preview.dark
     }"
+    :style="{
+      width: `${boxWidth}px`
+    }"
   >
     <div slot="header" class="clearfix">
       <span>背景：{{ preview.background }}</span>
@@ -12,6 +15,7 @@
       <el-button
         :type="charType(char)"
         v-for="char in preview.characters"
+        @click="clickChar(char)"
         :key="char"
       >
         <div class="preview__char">
@@ -30,11 +34,20 @@
 export default {
   name: "Wrapper",
   props: {
+    index: Number,
     preview: Object
+  },
+  computed: {
+    boxWidth() {
+      return this.preview.characters.size * 80 + 40;
+    }
   },
   methods: {
     charType(name) {
       return name === this.preview.active ? "primary" : "default";
+    },
+    clickChar(name) {
+      this.$emit("select-char", this.index, name);
     }
   }
 };
@@ -42,7 +55,6 @@ export default {
 
 <style lang="scss" scoped>
 .preview {
-  width: 300px;
   flex-shrink: 0;
   &.dark {
     background: #404040;
